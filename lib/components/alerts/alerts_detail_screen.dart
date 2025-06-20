@@ -2,6 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_agroroute/models/alert.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+String _formatDate(DateTime? fecha) {
+  if (fecha == null) return '';
+  return "${fecha.day.toString().padLeft(2, '0')}/${fecha.month.toString().padLeft(2, '0')}/${fecha.year} ${fecha.hour.toString().padLeft(2, '0')}:${fecha.minute.toString().padLeft(2, '0')}";
+}
+
+String _buildResolutionMessage(AlertModel alert) {
+  final paquete = alert.sensor.packageCode ?? '...';
+  final fecha = _formatDate(alert.fechaResuelto);
+  final tipo = alert.sensor.tipo.toLowerCase();
+  final subir = !(alert.bajar ?? false);
+
+  String accion = '';
+  if (tipo.contains('temperatura')) {
+    if (subir) {
+      accion =
+          'Acción: Activación del sistema de enfriamiento por aumento de temperatura.';
+    } else {
+      accion = 'Acción: Se reestableció el valor del sensor de temperatura.';
+    }
+  } else if (tipo.contains('humedad')) {
+    if (subir) {
+      accion =
+          'Acción: Activación del sistema de secado por aumento de humedad.';
+    } else {
+      accion = 'Acción: Se reestableció el valor del sensor de humedad.';
+    }
+  } else {
+    accion = 'Acción: Se reestableció el valor del sensor.';
+  }
+
+  if (alert.resueltoManual == true) {
+    return "La alerta del paquete #$paquete fue resuelta manualmente.\n$accion Revisión física del paquete y ajuste del entorno.";
+  } else {
+    return "El sistema resolvió automáticamente la alerta del paquete #$paquete.\n$accion";
+  }
+}
+
 class AlertsDetailScreen extends StatelessWidget {
   final AlertModel alert;
   const AlertsDetailScreen({super.key, required this.alert});
@@ -149,6 +186,20 @@ class AlertsDetailScreen extends StatelessWidget {
                     ),
                     child: const Text('Ubicación no disponible'),
                   ),
+
+                if (alert.estado == AlertStatus.resuelto)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: _AlertActionMessage(
+                      mensaje: _buildResolutionMessage(alert),
+                      icon: alert.resueltoManual == true
+                          ? Icons.handyman
+                          : Icons.settings_remote,
+                      color: alert.resueltoManual == true
+                          ? Colors.orange
+                          : Colors.green,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -230,6 +281,38 @@ class _InfoRow extends StatelessWidget {
             value,
             style: theme.textTheme.bodyMedium,
             overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AlertActionMessage extends StatelessWidget {
+  final String mensaje;
+  final IconData icon;
+  final Color color;
+  const _AlertActionMessage({
+    required this.mensaje,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: color, size: 28),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            mensaje,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
           ),
         ),
       ],

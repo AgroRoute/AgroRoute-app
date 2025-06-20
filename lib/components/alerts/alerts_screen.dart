@@ -138,7 +138,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
     );
     if (existeAlertaActiva) return;
 
-    final threshold = _sensorThresholds[sensorKey] ?? 50;
+    final threshold = _sensorThresholds[sensorKey] ?? 15;
     final original = _originalValues[sensorKey] ?? valorActual;
 
     final bool bajar = random.nextBool();
@@ -183,6 +183,16 @@ class _AlertsScreenState extends State<AlertsScreen> {
       alert.estado = AlertStatus.esperandoConfirmacion;
     });
     _updateAlert(alert);
+
+    Future.delayed(const Duration(seconds: 10), () {
+      if (!mounted) return;
+      setState(() {
+        alert.estado = AlertStatus.resuelto;
+        alert.resueltoManual = true;
+        alert.fechaResuelto = DateTime.now();
+      });
+      _updateAlert(alert);
+    });
   }
 
   void _handleAutomatic(AlertModel alert) {
@@ -191,6 +201,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
     setState(() {
       alert.sensor.valor = original;
       alert.estado = AlertStatus.resuelto;
+      alert.resueltoManual = false;
+      alert.fechaResuelto = DateTime.now();
       alert.valorActual = original;
     });
     _updateAlert(alert);

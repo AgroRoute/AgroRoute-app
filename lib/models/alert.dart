@@ -10,6 +10,8 @@ class AlertModel {
   final String mensaje;
   AlertStatus estado;
   final bool bajar;
+  bool? resueltoManual;
+  DateTime? fechaResuelto;
 
   AlertModel({
     required this.id,
@@ -19,6 +21,8 @@ class AlertModel {
     required this.mensaje,
     required this.estado,
     required this.bajar,
+    this.resueltoManual,
+    this.fechaResuelto,
   });
 
   factory AlertModel.fromJson(Map<String, dynamic> json) {
@@ -59,6 +63,10 @@ class AlertModel {
         orElse: () => AlertStatus.pendiente,
       ),
       bajar: json['bajar'] ?? false,
+      resueltoManual: json['resueltoManual'] ?? false,
+      fechaResuelto: json['fechaResuelto'] != null
+          ? DateTime.tryParse(json['fechaResuelto'])
+          : null,
     );
   }
 
@@ -72,6 +80,8 @@ class AlertModel {
       'mensaje': mensaje,
       'estado': estado.toString().split('.').last,
       'bajar': bajar,
+      'resueltoManual': resueltoManual ?? false,
+      'fechaResuelto': fechaResuelto?.toIso8601String(),
     };
   }
 }
