@@ -201,7 +201,6 @@ class _CreateShipmentScreenState extends State<CreateShipmentScreen> {
   }
 }
 
-// Diálogo para crear un paquete con sensores y validación de fecha
 class _PackageDialog extends StatefulWidget {
   final DateTime maxDate;
   const _PackageDialog({required this.maxDate});
@@ -332,7 +331,6 @@ class _PackageDialogState extends State<_PackageDialog> {
                 );
                 return;
               }
-              // Geocodifica el destino del paquete
               final coords = await geocodeAddress(_destinoController.text);
               if (coords == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -375,7 +373,6 @@ class _PackageDialogState extends State<_PackageDialog> {
   }
 }
 
-// Diálogo para agregar un sensor
 class _SensorDialog extends StatefulWidget {
   const _SensorDialog();
 

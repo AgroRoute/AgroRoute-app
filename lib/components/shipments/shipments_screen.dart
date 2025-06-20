@@ -193,15 +193,15 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                 ),
               ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      /*floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(
           Icons.add,
           size: 24,
-          color: Color.fromARGB(255, 255, 255, 255),
+         color: Color.fromARGB(255, 255, 255, 255),
         ),
         label: Text(
           'NUEVO ENVÍO',
-          style: theme.textTheme.labelLarge?.copyWith(
+           style: theme.textTheme.labelLarge?.copyWith(
             color: const Color.fromARGB(255, 255, 255, 255),
             fontWeight: FontWeight.bold,
           ),
@@ -218,7 +218,7 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
         },
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
+      ),*/
     );
   }
 }
